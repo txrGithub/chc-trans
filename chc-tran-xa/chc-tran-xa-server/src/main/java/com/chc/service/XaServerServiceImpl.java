@@ -1,10 +1,8 @@
 package com.chc.service;
 
-import com.chc.api.AccountApi;
-import com.chc.client.XaThirdClient;
-import com.chc.mapper.BankAMapper;
-import com.chc.pojo.entity.BankA;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,24 +13,23 @@ import org.springframework.transaction.annotation.Transactional;
  * @date 2019/12/13
  */
 @Service("xaServerService")
-public class XaServerServiceImpl implements AccountApi {
+public class XaServerServiceImpl{
 
     @Autowired
-    BankAMapper bankAMapper;
-    @Autowired
-    XaThirdClient xaThirdClient;
+    @Qualifier("tran1JdbcTemplate")
+    private JdbcTemplate tran1JdbcTemplate;
 
-    @Override
+    @Autowired
+    @Qualifier("tran2JdbcTemplate")
+    private JdbcTemplate tran2JdbcTemplate;
+
     @Transactional
-    public void transfer(int money) {
-        bankAMapper.insert(BankA.initial(-money));
-        System.out.println("BankA转账: " + -money);
-
-        xaThirdClient.transfer(money);
-        System.out.println("第三方BankB收账: " + money);
-
-        if (money >= 20 && money < 30) {
-            throw new RuntimeException("server is error,money too large");
+    public String transfer(int money) {
+        int resultJames = tran1JdbcTemplate.update("INSERT INTO bank_a(money,user_name)VALUES (?,?)",-money,"james");
+        int resultPeter = tran2JdbcTemplate.update("INSERT INTO bank_b(money,user_name)VALUES (?,?)",money,"peter");
+        if (money > 20){
+            throw new RuntimeException("money too large");//系统宕机了怎么办？
         }
+        return "success";
     }
 }

@@ -23,7 +23,6 @@
 
     <modules>
         <module>chc-tran-xa-server</module>
-        <module>chc-tran-xa-third</module>
     </modules>
 
 </project>

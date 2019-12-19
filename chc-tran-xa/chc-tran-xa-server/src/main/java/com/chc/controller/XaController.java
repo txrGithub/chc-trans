@@ -1,7 +1,7 @@
 package com.chc.controller;
 
-import com.chc.api.AccountApi;
-import com.chc.base.Result;
+import com.chc.conf.Result;
+import com.chc.service.XaServerServiceImpl;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
@@ -17,9 +17,9 @@ import javax.annotation.Resource;
 @Api(tags = "XA事务示例")
 @RestController
 @RequestMapping("xa")
-public class XaServerController {
+public class XaController {
     @Resource(name = "xaServerService")
-    AccountApi accountApi;
+    XaServerServiceImpl accountApi;
 
     @ApiOperation(value = "XA分布式事务")
     @GetMapping("/transfer/{money}")
